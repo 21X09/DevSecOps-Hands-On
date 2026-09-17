@@ -19,6 +19,11 @@ pipeline {
 				sh 'mvn -B test'
 			}
 		}
+		stage('Docker Build'){
+			steps{
+				sh 'docker build -t devsecops-hands-on:${BUILD_NUMBER} .'
+			}
+		}
 	}
 	post{
 		always{
