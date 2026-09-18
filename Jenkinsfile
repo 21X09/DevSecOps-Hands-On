@@ -24,6 +24,22 @@ pipeline {
 				sh 'docker build -t devsecops-hands-on:${BUILD_NUMBER} .'
 			}
 		}
+		stage('SAST-semgrep'){
+			steps{
+				sh '''
+					docker run --rm -v "$WORKSPACE:/src" returntocorp/semgrep \
+					semgrep scan --config=auto --error /src
+					'''
+			}
+		}
+		stage('SCA-Trivy'){
+			steps{
+				sh '''
+					docker run --rm -v "$WORKSPACE:/src" aquasec/trivy \
+					fs --scanners vuln --exit-code 1 --severity HIGH,CRITICAL /src
+					'''
+			}
+		}
 	}
 	post{
 		always{
