@@ -32,6 +32,14 @@ pipeline {
 					'''
 			}
 		}
+		stage('SCA-Trivy'){
+			steps{
+				sh '''
+					docker run --rm -v "$WORKSPACE:/src" aquasec/trivy \
+					fs --scanners vuln --exit-code 1 --severity HIGH,CRITICAL /src
+					'''
+			}
+		}
 	}
 	post{
 		always{
