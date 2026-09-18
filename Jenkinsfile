@@ -24,6 +24,14 @@ pipeline {
 				sh 'docker build -t devsecops-hands-on:${BUILD_NUMBER} .'
 			}
 		}
+		stage('SAST-semgrep'){
+			steps{
+				sh '''
+					docker run --rm -v "$WORKSPACE:/src" returntocorp/semgrep \
+					semgrep scan --config=auto --error /src
+					'''
+			}
+		}
 	}
 	post{
 		always{
